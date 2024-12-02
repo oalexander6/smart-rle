@@ -3,8 +3,33 @@ package rle
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"testing"
 )
+
+func ExampleDecode() {
+	input := []byte("as.3.df")
+	delimiter := byte('.')
+
+	decoded, err := Decode(input, delimiter)
+
+	fmt.Println(decoded, err)
+
+	// Output:
+	// asdddf nil
+}
+
+func ExampleEncode() {
+	input := []byte("asdddf")
+	delimiter := byte('.')
+
+	encoded, err := Encode(input, delimiter)
+
+	fmt.Println(encoded, err)
+
+	// Output:
+	// as.3.df nil
+}
 
 func TestDecode(t *testing.T) {
 	result, err := Decode([]byte("as3df"), '.')
