@@ -23,6 +23,10 @@
 // can be described with a given number of characters, allowing for the swapping of
 // consecutive bytes with a run length to occur more frequently than with base-10. This
 // also further improves the compression ratio.
+//
+// The delimiter is always encoded as the first byte of the output. If the input is empty,
+// then the delimiter is not specified and an empty output is returned. For decoding,
+// the delimiter is always pulled from the first byte.
 
 package rle
 
@@ -42,11 +46,11 @@ var (
 // Encode encodes the input byte array using the provided delimiter byte. If the
 // input byte array contains the delimiter byte, an error will be returned.
 func Encode(input []byte, delim byte) ([]byte, error) {
-	result := make([]byte, 0)
-
 	if len(input) == 0 {
-		return result, nil
+		return []byte{}, nil
 	}
+
+	result := []byte{delim}
 
 	last := input[0]
 	count := 1
@@ -84,10 +88,16 @@ func Encode(input []byte, delim byte) ([]byte, error) {
 // Decode decodes the input byte array from Smart RLE encoding to plain bytes. It must
 // be called with the same delimiter byte that the input was encoded with. If the input
 // is malformed, an error will be returned.
-func Decode(input []byte, delim byte) ([]byte, error) {
+func Decode(input []byte) ([]byte, error) {
+	if len(input) < 1 {
+		return []byte{}, nil
+	}
+
+	delim := input[0]
+
 	result := make([]byte, 0)
 
-	i := 0
+	i := 1
 
 	for i < len(input) {
 		if input[i] != delim {

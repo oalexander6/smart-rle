@@ -8,10 +8,9 @@ import (
 )
 
 func ExampleDecode() {
-	input := []byte("as.3.df")
-	delimiter := byte('.')
+	input := []byte(".as.3.df")
 
-	decoded, err := Decode(input, delimiter)
+	decoded, err := Decode(input)
 
 	fmt.Println(decoded, err)
 
@@ -32,47 +31,52 @@ func ExampleEncode() {
 }
 
 func TestDecode(t *testing.T) {
-	result, err := Decode([]byte("as3df"), '.')
+	result, err := Decode([]byte(".as3df"))
 	if err != nil || !bytes.Equal(result, []byte("as3df")) {
 		t.FailNow()
 	}
 
-	result, err = Decode([]byte("as.3.df"), '.')
+	result, err = Decode([]byte(".as.3.df"))
 	if err != nil || !bytes.Equal(result, []byte("asdddf")) {
 		t.FailNow()
 	}
 
-	result, err = Decode([]byte("as.12.df"), '.')
+	result, err = Decode([]byte(".as.12.df"))
 	if err != nil || !bytes.Equal(result, []byte("asddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddf")) {
 		t.FailNow()
 	}
 
-	result, err = Decode([]byte("as.3.d.4.f"), '.')
+	result, err = Decode([]byte(".as.3.d.4.f"))
 	if err != nil || !bytes.Equal(result, []byte("asdddffff")) {
 		t.FailNow()
 	}
 
-	_, err = Decode([]byte("as.3df"), '.')
+	result, err = Decode([]byte(""))
+	if err != nil || !bytes.Equal(result, []byte("")) {
+		t.FailNow()
+	}
+
+	_, err = Decode([]byte(".as.3df"))
 	if !errors.Is(err, ErrMalformedInput) {
 		t.FailNow()
 	}
 
-	_, err = Decode([]byte("as.3?.df"), '.')
+	_, err = Decode([]byte(".as.3?.df"))
 	if !errors.Is(err, ErrMalformedInput) {
 		t.FailNow()
 	}
 
-	_, err = Decode([]byte("asdf.4."), '.')
+	_, err = Decode([]byte(".asdf.4."))
 	if !errors.Is(err, ErrMalformedInput) {
 		t.FailNow()
 	}
 
-	result, err = Decode([]byte(".4.a.4.b"), '.')
+	result, err = Decode([]byte("..4.a.4.b"))
 	if err != nil || !bytes.Equal(result, []byte("aaaabbbb")) {
 		t.FailNow()
 	}
 
-	result, err = Decode([]byte(".1Q.aewfffiohwef.C.b"), '.')
+	result, err = Decode([]byte("..1Q.aewfffiohwef.C.b"))
 	if err != nil || !bytes.Equal(result, []byte("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaewfffiohwefbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb")) {
 		t.FailNow()
 	}
@@ -80,32 +84,37 @@ func TestDecode(t *testing.T) {
 
 func TestEncode(t *testing.T) {
 	result, err := Encode([]byte("asdf"), '.')
-	if err != nil || !bytes.Equal(result, []byte("asdf")) {
+	if err != nil || !bytes.Equal(result, []byte(".asdf")) {
 		t.FailNow()
 	}
 
 	result, err = Encode([]byte("asddf"), '.')
-	if err != nil || !bytes.Equal(result, []byte("asddf")) {
+	if err != nil || !bytes.Equal(result, []byte(".asddf")) {
 		t.FailNow()
 	}
 
 	result, err = Encode([]byte("asdddf"), '.')
-	if err != nil || !bytes.Equal(result, []byte("asdddf")) {
+	if err != nil || !bytes.Equal(result, []byte(".asdddf")) {
 		t.FailNow()
 	}
 
 	result, err = Encode([]byte("asddddf"), '.')
-	if err != nil || !bytes.Equal(result, []byte("as.4.df")) {
+	if err != nil || !bytes.Equal(result, []byte(".as.4.df")) {
 		t.FailNow()
 	}
 
 	result, err = Encode([]byte("aaaabbbb"), '.')
-	if err != nil || !bytes.Equal(result, []byte(".4.a.4.b")) {
+	if err != nil || !bytes.Equal(result, []byte("..4.a.4.b")) {
 		t.FailNow()
 	}
 
 	result, err = Encode([]byte("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaewfffiohwefbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"), '.')
-	if err != nil || !bytes.Equal(result, []byte(".1Q.aewfffiohwef.C.b")) {
+	if err != nil || !bytes.Equal(result, []byte("..1Q.aewfffiohwef.C.b")) {
+		t.FailNow()
+	}
+
+	result, err = Encode([]byte(""), '.')
+	if err != nil || !bytes.Equal(result, []byte("")) {
 		t.FailNow()
 	}
 
