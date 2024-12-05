@@ -27,7 +27,7 @@ func ExampleEncode() {
 	fmt.Println(encoded, err)
 
 	// Output:
-	// as.3.df nil
+	// .as.3.df nil
 }
 
 func TestDecode(t *testing.T) {

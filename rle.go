@@ -4,9 +4,9 @@
 // if this results in a shorter output.
 //
 // Examples:
-//   asdf > asdf
-//   asdddf > asdddf
-//   asddddf > as.4.df
+//   asdf > .asdf
+//   asdddf > .asdddf
+//   asddddf > .as.4.df
 //
 // In order for this encoding to work, there must be a byte value that is never present
 // in the input to use as a delimiter. If this byte is ever found in the input to encode,

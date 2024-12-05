@@ -28,9 +28,9 @@ the delimiter is always pulled from the first byte.
 ## Examples
 For each example, the chosen delimitter is `.` and the possible input characters are a-z, A-Z, and 0-9.
 
-   `asdf` > `asdf`
-   `asdddf` > `asdddf` (no swap because .3.d is longer than ddd)
-   `asdddddf` > `as.5.df`
+   `asdf` > `.asdf`
+   `asdddf` > `.asdddf` (no swap because .3.d is longer than ddd)
+   `asdddddf` > `.as.5.df`
 
 ## Todo
 Eliminate the restriction on not having the delimiter in the input by allowing it to be present
