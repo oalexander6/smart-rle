@@ -35,3 +35,13 @@ For each example, the chosen delimitter is `.` and the possible input characters
 ## Todo
 Eliminate the restriction on not having the delimiter in the input by allowing it to be present
 if two are specified in a row.
+
+## Encoding
+The encoding for this algorithm works as follows:
+
+1. If the input is empty, the output is empty. Otherwise, continue.
+2. The delimiter is the first byte.
+3. Consecutive identical bytes that form a chain longer than the number of base-62 bytes
+required to express the length plus two bytes (opening and closing delimiter) are replaced
+by the following sequence of bytes: `<delim><base-62 length><delim><byte value>`. All other 
+bytes are copied as they appear in the input.
